@@ -1,0 +1,20 @@
+{
+    "name": "pmvc-plugin/error",
+    "description": "PMVC error hnadler",
+    "type": "library",
+    "keywords": ["error",  "pmvc", "plug-in"],
+    "license": "MIT",
+    "authors": [
+        {
+            "name": "Hill",
+            "email": "hill@kimo.com"
+        }
+    ],
+    "require": {
+        "pmvc/pmvc": "*"
+    },
+    "suggest": {
+        "pmvc-plugin/dispatcher": "Allows event dispatch"
+    },
+    "minimum-stability": "dev"
+}

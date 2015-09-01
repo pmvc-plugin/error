@@ -47,6 +47,7 @@ class error extends p\PlugIn
             )
         );
         set_error_handler(array($this,'handleError'));
+        set_exception_handler(array($this,'handleException'));
     }
 
     public function onSetConfig()
@@ -87,4 +88,12 @@ class error extends p\PlugIn
         }
     }
 
+    public function handleException($exception)
+    {
+        p\d($exception);
+        $Errors =& p\getOption(p\ERRORS);
+        $message = $exception->getMessage();
+        $Errors[p\APP_ERRORS][]=$message;
+        $Errors[p\APP_LAST_ERROR]=$message;
+    }
 } //end class

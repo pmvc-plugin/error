@@ -19,7 +19,7 @@ class error extends p\PlugIn
         E_USER_ERROR=>'E_USER_ERROR',
         E_USER_WARNING=>'E_USER_WARNING',
         E_USER_NOTICE=>'E_USER_NOTICE',
-        p\MY_USER_ERRORS=>array(
+        p\USER_ERRORS=>array(
             E_USER_ERROR=>'E_USER_ERROR'
         ),
         p\APP_ERRORS=>array(
@@ -74,17 +74,18 @@ class error extends p\PlugIn
         if (!isset($this->_error[$number])) {
             return null;
         }
-        p\d($message);
         $Errors =& p\getOption(p\ERRORS);
-        if (isset($this->_error[p\MY_USER_ERRORS][$number])) {
-            $Errors[p\MY_USER_ERRORS][]=$message;
-            $Errors[p\MY_USER_LAST_ERROR]=$message;
+        if (isset($this->_error[p\USER_ERRORS][$number])) {
+            $Errors[p\USER_ERRORS][]=$message;
+            $Errors[p\USER_LAST_ERROR]=$message;
         } elseif (isset($this->_error[p\APP_ERRORS][$number])) {
             $Errors[p\APP_ERRORS][]=$message;
             $Errors[p\APP_LAST_ERROR]=$message;
+            p\d($message);
         } else {
             $Errors[p\SYSTEM_ERRORS][]=$message;
             $Errors[p\SYSTEM_LAST_ERROR]=$message;
+            p\d($message);
         }
     }
 

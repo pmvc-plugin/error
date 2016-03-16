@@ -60,11 +60,6 @@ class error extends p\PlugIn
     public function onFinish()
     {
         restore_error_handler();
-        if (!empty($Errors[p\USER_ERRORS])) {
-            $mvc = \PMVC\getC();
-            $forward = $mvc->getErrorForward();
-            $mvc->processForward($forward); 
-        }
     }
 
     public function setErrorReporting($level)

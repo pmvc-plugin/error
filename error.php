@@ -1,6 +1,6 @@
 <?php
 namespace PMVC\PlugIn\error;
-
+use PMVC\Event;
 use PMVC as p;
 
 ${_INIT_CONFIG}[_CLASS] = __NAMESPACE__.'\error';
@@ -33,18 +33,18 @@ class error extends p\PlugIn
         p\call_plugin(
             'dispatcher',
             'attach',
-            array(
+            [ 
                 $this,
-                'SetConfig'
-            )
+                Event\SET_CONFIG,
+            ]
         );
         p\call_plugin(
             'dispatcher',
             'attach',
-            array(
+            [
                 $this,
-                'Finish'
-            )
+                Event\FINISH,
+            ]
         );
         set_error_handler(array($this,'handleError'));
         set_exception_handler(array($this,'handleException'));

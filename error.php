@@ -30,7 +30,7 @@ class error extends p\PlugIn
     
     public function init()
     {
-        p\call_plugin(
+        p\callPlugin(
             'dispatcher',
             'attach',
             [ 
@@ -38,7 +38,7 @@ class error extends p\PlugIn
                 Event\SET_CONFIG,
             ]
         );
-        p\call_plugin(
+        p\callPlugin(
             'dispatcher',
             'attach',
             [

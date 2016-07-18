@@ -1,59 +1,41 @@
 <?php
 namespace PMVC\PlugIn\error;
+
 use PMVC\Event;
 use PMVC as p;
+use InvalidArgumentException;
 
 ${_INIT_CONFIG}[_CLASS] = __NAMESPACE__.'\error';
 
 class error extends p\PlugIn
 {
-    public $_error = array(
-        E_ERROR=>'E_ERROR',
-        E_WARNING=>'E_WARNING',
-        E_PARSE=>'E_PARSE',
-        E_NOTICE=>'E_NOTICE',
-        E_CORE_ERROR=>'E_CORE_ERROR',
-        E_CORE_WARNING=>'E_CORE_WARNING',
-        E_COMPILE_ERROR=>'E_COMPILE_ERROR',
-        E_COMPILE_WARNING=>'E_COMPILE_WARNING',
-        E_USER_ERROR=>'E_USER_ERROR',
-        E_USER_WARNING=>'E_USER_WARNING',
-        E_USER_NOTICE=>'E_USER_NOTICE',
-        p\USER_ERRORS=>array(
-            E_USER_ERROR=>'E_USER_ERROR'
-        ),
-        p\APP_ERRORS=>array(
-            E_USER_WARNING=>'E_USER_WARNING',
-            E_USER_NOTICE=>'E_USER_NOTICE',
-        ),
-    );
+    public $_error = [ 
+        p\USER_ERRORS=>[
+            E_USER_ERROR
+        ],
+        p\APP_ERRORS=>[
+            E_USER_WARNING,
+            E_USER_NOTICE,
+            E_USER_DEPRECATED,
+        ],
+    ];
     
     public function init()
     {
-        p\callPlugin(
-            'dispatcher',
-            'attach',
-            [ 
-                $this,
-                Event\SET_CONFIG,
-            ]
-        );
-        p\callPlugin(
-            'dispatcher',
-            'attach',
-            [
-                $this,
-                Event\FINISH,
-            ]
-        );
-        set_error_handler(array($this,'handleError'));
-        set_exception_handler(array($this,'handleException'));
-    }
-
-    public function onSetConfig()
-    {
-        if (p\plug('dispatcher')->isSetOption(_ERROR_REPORTING)) {
-            $this->setErrorReporting(p\getOption(_ERROR_REPORTING));
+        if (defined('Event\FINISH')) {
+            p\callPlugin(
+                'dispatcher',
+                'attach',
+                [
+                    $this,
+                    Event\FINISH,
+                ]
+            );
+        }
+        set_error_handler([$this,'handleError']);
+        set_exception_handler([$this,'handleException']);
+        if (isset($this[0])) {
+            $this->setErrorReporting($this[0]);
         }
     }
 
@@ -64,21 +46,44 @@ class error extends p\PlugIn
 
     public function setErrorReporting($level)
     {
-        error_reporting($level);
         ini_set('display_errors', true);
         ini_set('display_startup_errors', true);
+        $func = 'e_'.$level;
+        if ($this->isCallable($func)) {
+            $int = $this->$func();
+            error_reporting($int);
+        } else {
+            throw new InvalidArgumentException('Only accept [error|warning|notice|all]. You value is ['.$level.']');
+        }
+    }
+
+    public function e_error()
+    {
+        return (int) E_ERROR | E_USER_ERROR | E_CORE_ERROR | E_COMPILE_ERROR | E_RECOVERABLE_ERROR | E_PARSE;
+    }
+
+    public function e_warning()
+    {
+        return (int) $this->e_error() | E_WARNING | E_USER_WARNING | E_CORE_WARNING | E_COMPILE_WARNING;
+    }
+
+    public function e_notice()
+    {
+        return (int) $this->e_warning() | E_NOTICE | E_USER_NOTICE | E_DEPRECATED | E_USER_DEPRECATED;
+    }
+
+    public function e_all()
+    {
+        return (int) $this->e_notic() | E_STRICT;
     }
 
     public function handleError($number, $message, $file, $line, $context)
     {
-        if (!isset($this->_error[$number])) {
-            return null;
-        }
         $Errors =& p\getOption(p\ERRORS);
-        if (isset($this->_error[p\USER_ERRORS][$number])) {
+        if (in_array($number, $Errors[p\USER_ERRORS])) {
             $Errors[p\USER_ERRORS][]=$message;
             $Errors[p\USER_LAST_ERROR]=$message;
-        } elseif (isset($this->_error[p\APP_ERRORS][$number])) {
+        } elseif (in_array($number, $Errors[p\APP_ERRORS])) {
             $Errors[p\APP_ERRORS][]=$message;
             $Errors[p\APP_LAST_ERROR]=$message;
             p\d($message);

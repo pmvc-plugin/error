@@ -1,6 +1,6 @@
 <?php
 PMVC\Load::plug();
-PMVC\addPlugInFolder('../');
+PMVC\addPlugInFolders(['../']);
 class ErrorTest extends PHPUnit_Framework_TestCase
 {
     private $_plug = 'error';
@@ -20,9 +20,19 @@ class ErrorTest extends PHPUnit_Framework_TestCase
     {
         $errStr='error';
         $err = PMVC\plug($this->_plug);
-        $err->setErrorReporting(E_ALL);
+        $err->setErrorReporting('all');
         trigger_error($errStr);
         $Errors =& PMVC\getOption(PMVC\ERRORS);
         $this->assertEquals($errStr,$Errors[PMVC\APP_LAST_ERROR]);
+    }
+
+    /**
+     * @expectedException InvalidArgumentException 
+     */
+    function testSetErrorReportingFail()
+    {
+        $errStr='error';
+        $err = PMVC\plug($this->_plug);
+        $err->setErrorReporting('e_fake');
     }
 }

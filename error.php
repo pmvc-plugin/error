@@ -74,16 +74,16 @@ class error extends p\PlugIn
 
     public function e_all()
     {
-        return (int) $this->e_notic() | E_STRICT;
+        return (int) $this->e_notice() | E_STRICT;
     }
 
     public function handleError($number, $message, $file, $line, $context)
     {
         $Errors =& p\getOption(p\ERRORS);
-        if (in_array($number, $Errors[p\USER_ERRORS])) {
+        if (in_array($number, $this->_error[p\USER_ERRORS])) {
             $Errors[p\USER_ERRORS][]=$message;
             $Errors[p\USER_LAST_ERROR]=$message;
-        } elseif (in_array($number, $Errors[p\APP_ERRORS])) {
+        } elseif (in_array($number, $this->_error[p\APP_ERRORS])) {
             $Errors[p\APP_ERRORS][]=$message;
             $Errors[p\APP_LAST_ERROR]=$message;
             p\d($message);

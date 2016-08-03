@@ -1,7 +1,6 @@
 <?php
 namespace PMVC\PlugIn\error;
 
-use PMVC\Event;
 use PMVC as p;
 use InvalidArgumentException;
 
@@ -22,16 +21,6 @@ class error extends p\PlugIn
     
     public function init()
     {
-        if (defined('Event\FINISH')) {
-            p\callPlugin(
-                'dispatcher',
-                'attach',
-                [
-                    $this,
-                    Event\FINISH,
-                ]
-            );
-        }
         set_error_handler([$this,'handleError']);
         set_exception_handler([$this,'handleException']);
         if (isset($this[0])) {
@@ -39,7 +28,7 @@ class error extends p\PlugIn
         }
     }
 
-    public function onFinish()
+    public function __destruct()
     {
         restore_error_handler();
     }

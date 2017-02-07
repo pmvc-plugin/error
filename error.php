@@ -68,16 +68,19 @@ class error extends p\PlugIn
 
     public function handleError($number, $message, $file, $line, $context)
     {
-        $Errors =& p\getOption(p\ERRORS);
+        $Errors = p\getOption(p\ERRORS); //HashMap
         if (in_array($number, $this->_error[p\USER_ERRORS])) {
-            \PMVC\ref($Errors->{p\USER_ERRORS})[] = $message;
+            $ref =& \PMVC\ref($Errors->{p\USER_ERRORS});
+            $ref[] = $message;
             $Errors[p\USER_LAST_ERROR]=$message;
         } elseif (in_array($number, $this->_error[p\APP_ERRORS])) {
-            \PMVC\ref($Errors->{p\APP_ERRORS})[] = $message;
+            $ref =& \PMVC\ref($Errors->{p\APP_ERRORS});
+            $ref[] = $message;
             $Errors[p\APP_LAST_ERROR]=$message;
             p\d($message);
         } else {
-            \PMVC\ref($Errors->{p\SYSTEM_ERRORS})[] = $message;
+            $ref =& \PMVC\ref($Errors->{p\SYSTEM_ERRORS});
+            $ref[] = $message;
             $Errors[p\SYSTEM_LAST_ERROR]=$message;
             p\d($message);
         }
@@ -85,10 +88,11 @@ class error extends p\PlugIn
 
     public function handleException($exception)
     {
-        p\d($exception);
-        $Errors =& p\getOption(p\ERRORS);
+        $Errors = p\getOption(p\ERRORS); //HashMap
         $message = $exception->getMessage();
-        \PMVC\ref($Errors->{p\APP_ERRORS})[] = $message;
+        $ref =& \PMVC\ref($Errors->{p\APP_ERRORS});
+        $ref[] = $message;
         $Errors[p\APP_LAST_ERROR]=$message;
+        p\d($exception);
     }
 } //end class

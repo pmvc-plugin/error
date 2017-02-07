@@ -88,7 +88,7 @@ class error extends p\PlugIn
         p\d($exception);
         $Errors =& p\getOption(p\ERRORS);
         $message = $exception->getMessage();
-        $Errors[p\APP_ERRORS][]=$message;
+        \PMVC\ref($Errors->{p\APP_ERRORS})[] = $message;
         $Errors[p\APP_LAST_ERROR]=$message;
     }
 } //end class

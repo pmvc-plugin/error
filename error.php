@@ -23,6 +23,12 @@ class error extends p\PlugIn
     {
         set_error_handler([$this,'handleError']);
         set_exception_handler([$this,'handleException']);
+        register_shutdown_function(function () {
+            error_reporting(0);
+            \PMVC\dev(function(){
+                $this->setErrorReporting('all');
+            },'fatal');
+        });
         if (isset($this[0])) {
             $this->setErrorReporting($this[0]);
         }

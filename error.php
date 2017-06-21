@@ -1,8 +1,9 @@
 <?php
 namespace PMVC\PlugIn\error;
 
-use PMVC as p;
 use InvalidArgumentException;
+use PMVC as p;
+use PMVC\Event;
 
 ${_INIT_CONFIG}[_CLASS] = __NAMESPACE__.'\error';
 
@@ -27,6 +28,11 @@ class error extends p\PlugIn
             error_reporting(0);
             \PMVC\dev(function(){
                 $this->setErrorReporting('all');
+                return [
+                    'memory-use'=>memory_get_usage(),
+                    'memory-set'=>ini_get('memory_limit'),
+                    'isFinish'=>\PMVC\getOption(Event\FINISH)
+                ];
             },'fatal');
         });
         if (isset($this[0])) {
@@ -37,6 +43,7 @@ class error extends p\PlugIn
     public function __destruct()
     {
         restore_error_handler();
+        restore_exception_handler();
     }
 
     public function setErrorReporting($level)

@@ -79,7 +79,7 @@ class error extends p\PlugIn
         return (int) $this->e_notice() | E_STRICT;
     }
 
-    public function handleError($number, $message, $file, $line, $context)
+    public function handleError($number, $message, $file = null, $line = null, $context = null)
     {
         $Errors = p\getOption(p\ERRORS); //HashMap
         if (in_array($number, $this->_error[p\USER_ERRORS])) {

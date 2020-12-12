@@ -16,6 +16,5 @@ before_script:
   - if [[ "$TRAVIS_PHP_VERSION" != '5.6' ]]; then composer require --ignore-platform-req=php phpunit/phpunit 9.5.0; fi
  
 script:
-  - vendor/bin/phpunit
   - if [[ "$TRAVIS_PHP_VERSION" == '5.6' ]]; then vendor/bin/phpunit --no-configuration --bootstrap ./tests-legacy/include.php ./tests-legacy/ErrorTest.php; fi
   - if [[ "$TRAVIS_PHP_VERSION" != '5.6' ]]; then vendor/bin/phpunit -v; fi

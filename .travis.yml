@@ -17,5 +17,5 @@ before_script:
  
 script:
   - vendor/bin/phpunit
-  - if [[ "$TRAVIS_PHP_VERSION" == '5.6' ]]; then vendor/bin/phpunit --bootstrap tests-legacy/include.php; fi
+  - if [[ "$TRAVIS_PHP_VERSION" == '5.6' ]]; then vendor/bin/phpunit --no-configuration --bootstrap ./tests-legacy/include.php ./tests-legacy/ErrorTest.php; fi
   - if [[ "$TRAVIS_PHP_VERSION" != '5.6' ]]; then vendor/bin/phpunit -v; fi

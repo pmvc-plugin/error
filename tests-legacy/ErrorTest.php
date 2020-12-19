@@ -9,7 +9,7 @@ class ErrorTest extends PHPUnit_Framework_TestCase
         print_r(PMVC\plug($this->_plug));
         $output = ob_get_contents();
         ob_end_clean();
-        $this->assertStringContainsString($this->_plug,$output);
+        $this->assertContains($this->_plug,$output);
     }
 
     /**
@@ -17,7 +17,6 @@ class ErrorTest extends PHPUnit_Framework_TestCase
      */
     function testError()
     {
-      $this->expectException(PHPUnit_Framework_Error::class);
       try {
         $errStr='error';
         $err = PMVC\plug($this->_plug);
@@ -28,7 +27,7 @@ class ErrorTest extends PHPUnit_Framework_TestCase
       } catch (Exception $e) { 
         throw new PHPUnit_Framework_Error(
           $e->getMessage(),
-          0,
+          0
         );
       }
     }
@@ -38,8 +37,6 @@ class ErrorTest extends PHPUnit_Framework_TestCase
      */
     function testSetErrorReportingFail()
     {
-        $this->expectException(InvalidArgumentException::class);
-        $errStr='error';
         $err = PMVC\plug($this->_plug);
         $err->setErrorReporting('e_fake');
     }
